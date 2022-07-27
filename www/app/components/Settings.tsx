@@ -337,6 +337,16 @@ export default class Settings extends React.Component<{}, State> {
 								!this.state.settings.elastic_proxy_requests);
 						}}
 					/>
+					<PageInput
+						label="Log refresh interval in seconds"
+						help="How often the web interface refresh the logs"
+						type="text"
+						placeholder="Session max duration"
+						value={this.state.settings.logs_refresh_interval}
+						onChange={(val): void => {
+							this.set('logs_refresh_interval', parseInt(val, 10));
+						}}
+					/>
 				</PagePanel>
 			</PageSplit>
 			<PageSave

@@ -89,6 +89,7 @@ export interface Settings {
 	elastic_username: string;
 	elastic_password: string;
 	elastic_proxy_requests: boolean;
+	logs_refresh_interval: number;
 }
 
 export type SettingsRo = Readonly<Settings>;

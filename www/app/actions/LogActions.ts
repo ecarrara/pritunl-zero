@@ -7,6 +7,7 @@ import * as Csrf from '../Csrf';
 import Loader from '../Loader';
 import * as LogTypes from '../types/LogTypes';
 import LogsStore from '../stores/LogsStore';
+import SettingsStore from '../stores/SettingsStore';
 import * as MiscUtils from '../utils/MiscUtils';
 
 let syncId: string;
@@ -47,13 +48,15 @@ export function sync(): Promise<void> {
 					return;
 				}
 
-				Dispatcher.dispatch({
-					type: LogTypes.SYNC,
-					data: {
-						logs: res.body.logs,
-						count: res.body.count,
-					},
-				});
+				window.setTimeout(() => {
+					Dispatcher.dispatch({
+						type: LogTypes.SYNC,
+						data: {
+							logs: res.body.logs,
+							count: res.body.count,
+						},
+					});
+				}, SettingsStore.logs_refresh_interval * 1000);
 
 				resolve();
 			});

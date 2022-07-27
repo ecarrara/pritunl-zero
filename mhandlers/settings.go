@@ -27,6 +27,7 @@ type settingsData struct {
 	ElasticUsername        string                        `json:"elastic_username"`
 	ElasticPassword        string                        `json:"elastic_password"`
 	ElasticProxyRequests   bool                          `json:"elastic_proxy_requests"`
+	LogsRefreshInterval    int                           `json:"logs_refresh_interval"`
 }
 
 func getSettingsData() *settingsData {
@@ -42,6 +43,7 @@ func getSettingsData() *settingsData {
 		ElasticUsername:        settings.Elastic.Username,
 		ElasticPassword:        settings.Elastic.Password,
 		ElasticProxyRequests:   settings.Elastic.ProxyRequests,
+		LogsRefreshInterval:    settings.WWW.LogsRefreshInterval,
 	}
 
 	if len(settings.Elastic.Addresses) != 0 {
@@ -108,6 +110,21 @@ func settingsPut(c *gin.Context) {
 
 	if fields.Len() != 0 {
 		err = settings.Commit(db, settings.Elastic, fields)
+		if err != nil {
+			utils.AbortWithError(c, 500, err)
+			return
+		}
+	}
+
+	fields = set.NewSet()
+
+	if settings.WWW.LogsRefreshInterval != data.LogsRefreshInterval {
+		settings.WWW.LogsRefreshInterval = data.LogsRefreshInterval
+		fields.Add("logs_refresh_interval")
+	}
+
+	if fields.Len() != 0 {
+		err = settings.Commit(db, settings.WWW, fields)
 		if err != nil {
 			utils.AbortWithError(c, 500, err)
 			return
